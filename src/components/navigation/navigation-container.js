@@ -17,7 +17,7 @@ const NavigationContainer = (props) => {
   const handleSignOut = () => {
     
     axios
-      .delete("http://localhost:5000/api/token/v1.0/remove", {
+      .delete("http://localhost:5000/api/user/v1.0/logout", {
         withCredentials: true,
       })
       .then((response) => {

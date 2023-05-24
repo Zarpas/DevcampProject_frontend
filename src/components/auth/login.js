@@ -15,16 +15,12 @@ export default class Login extends Component {
 
   handleSubmit(event) {
     axios
-      .post(
-        "http://localhost:5000/api/token/v1.0/auth",
-        { id: this.state.id, password: this.state.password },
-        { withCredentials: true }
-      )
+      .post("http://localhost:5000/api/user/v1.0/token", { id: this.state.id, password: this.state.password }, { withCredentials: true })
       .then((response) => {
         console.log("Login response:", response);
         if (response.data.status === "created") {
-          axios.defaults.headers.common['X-CSRF-TOKEN'] = response.data.meta.access_csrf_token;
-          axios.defaults.headers.common['X-CSRF_REFRESH_TOKEN'] = response.data.meta.refresh_csrf_token;
+          // axios.defaults.headers.common['X-CSRF-TOKEN'] = response.data.meta.access_csrf_token;
+          // axios.defaults.headers.common['X-CSRF_REFRESH_TOKEN'] = response.data.meta.refresh_csrf_token;
           this.props.handleSuccesfulAuth();
         } else {
           this.setState({ errorText: "Wrong id or password" });

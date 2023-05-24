@@ -3,13 +3,19 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
 import NavigationContainer from "./navigation/navigation-container";
+import PasswordManager from "./user-admin/password-manager";
 import Home from "./pages/home";
 import Auth from "./auth";
+import UserAdmin from "./user-admin/user-admin";
+import UserDetail from "./user-admin/user-detail";
 import NoMatch from "./pages/no-match";
+import Icons from "./helpers/icons";
 
 export default class App extends Component {
   constructor(props) {
     super(props);
+
+    Icons();
 
     this.state = {
       loggedInStatus: "NOT_LOGGED_IN",
@@ -34,13 +40,14 @@ export default class App extends Component {
 
   handleSuccesfulLogout() {
     this.setState({
-      loggedInStatus: "NOT_LOGGED_IN"
+      loggedInStatus: "NOT_LOGGED_IN",
+      can_admin: false
     });
   }
 
   checkLoginStatus() {
     return axios
-      .get("http://localhost:5000/api/token/v1.0/logged_in", {
+      .get("http://localhost:5000/api/user/v1.0/logged_in", {
         withCredentials: true,
       })
       .then((response) => {
@@ -59,6 +66,7 @@ export default class App extends Component {
             loggedInStatus: "NOT_LOGGED_IN",
           });
         }
+
       })
       .catch((error) => {
         console.log(error);
@@ -67,6 +75,14 @@ export default class App extends Component {
 
   componentDidMount() {
     this.checkLoginStatus();
+  }
+
+  authorizedPages() {
+    return [
+      <Route key="1" path="/password-manager" component={PasswordManager} />,
+      <Route key="2" path="/user-admin" component={UserAdmin} />,
+      <Route key="3" path="/user/:slug" component={UserDetail} />
+    ]
   }
 
   render() {
@@ -87,6 +103,7 @@ export default class App extends Component {
                   />
                 )}
               />
+              {this.state.loggedInStatus === "LOGGED_IN" ? this.authorizedPages(): null}
 
               <Route component={NoMatch} />
             </Switch>
