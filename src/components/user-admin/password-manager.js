@@ -22,26 +22,36 @@ export default class PasswordManager extends Component {
   }
 
   handleSubmit(event) {
+    const access_token = localStorage.getItem("access-token")
     if (this.state.new_password1 === this.state.new_password2) {
-      axios
-        .patch(
-          "http://localhost:5000/api/user/v1.0/new_password",
-          { old_password: this.state.old_password, new_password: this.state.new_password1 },
-          { withCredentials: true }
-        )
-        .then((response) => {
-          console.log("PasswordManager response:", response);
-          if (response.data.status === "created") {
-            
-          } else {
-            this.setState({ errorText: "Wrong id or password" });
-            
-          }
-        })
-        .catch((error) => {
-          console.log("Login error:", error);
-          this.setState({ errorText: "An error ocurred" });
-        });
+      // axios
+      //   .patch(
+      //     "http://localhost:5000/api/user/v1.0/new_password",
+      //     { old_password: this.state.old_password, new_password: this.state.new_password1 }
+      //   )
+      axios({
+        method: "PATCH",
+        url:"http://127.0.0.1:5000/api/user/v1.0/new_password",
+        data: {
+          old_password: this.state.old_password, 
+          new_password: this.state.new_password1
+        },
+        headers: {
+          Authorization: 'Bearer ' + access_token
+        }
+      })
+      .then((response) => {
+        console.log("PasswordManager response:", response);
+        if (response.data.status === "created") {
+            this.setState({ errorText: "Password changed"})
+        } else {
+          this.setState({ errorText: "Wrong id or password" });
+        }
+      })
+      .catch((error) => {
+        console.log("Login error:", error);
+        this.setState({ errorText: "An error ocurred" });
+      });
     } else {
       this.setState({
         errorText: "New password have to be equals."
@@ -49,7 +59,7 @@ export default class PasswordManager extends Component {
     }
 
     event.preventDefault();
-    this.props.history.push("/");
+    // this.props.history.push("/");
   }
 
   render() {
@@ -81,7 +91,7 @@ export default class PasswordManager extends Component {
               onChange={this.handleChange}
             />
             <div>
-              <button type="submit">Login</button>
+              <button type="submit">Send</button>
             </div>
           </form>
       </div>

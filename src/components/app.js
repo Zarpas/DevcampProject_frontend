@@ -5,11 +5,12 @@ import axios from "axios";
 import NavigationContainer from "./navigation/navigation-container";
 import PasswordManager from "./user-admin/password-manager";
 import Home from "./pages/home";
-import Auth from "./auth";
+import Auth from "./pages/auth";
 import UserAdmin from "./user-admin/user-admin";
 import UserDetail from "./user-admin/user-detail";
 import NoMatch from "./pages/no-match";
 import Icons from "./helpers/icons";
+// import {getToken, saveToken, removeToken } from "./helpers/use_token";
 
 export default class App extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ export default class App extends Component {
     this.handleUnsuccesfulLogin = this.handleUnsuccesfulLogin.bind(this);
     this.handleSuccesfulLogout = this.handleSuccesfulLogout.bind(this);
   }
+
 
   handleSuccesfulLogin() {
     this.setState({
@@ -46,10 +48,11 @@ export default class App extends Component {
   }
 
   checkLoginStatus() {
-    return axios
-      .get("http://localhost:5000/api/user/v1.0/logged_in", {
-        withCredentials: true,
-      })
+
+    const access_token = localStorage.getItem("access-token")
+    if (access_token === null) {
+      return axios
+      .get("http://localhost:5000/api/user/v1.0/logged_in")
       .then((response) => {
         console.log("checkLoginStatus", response);
         const loggedIn = response.data.logged_in;
@@ -71,6 +74,34 @@ export default class App extends Component {
       .catch((error) => {
         console.log(error);
       });
+    } else {
+      return axios({
+        method: "GET",
+        url:"http://127.0.0.1:5000/api/user/v1.0/logged_in",
+        headers: {
+          Authorization: 'Bearer ' + access_token
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        const loggedIn = response.data.logged_in;
+        const loggedInStatus = this.state.loggedInStatus;
+
+        if (loggedIn && loggedInStatus === "LOGGED_IN") {
+          return loggedIn;
+        } else if (loggedIn && loggedInStatus === "NOT_LOGGED_IN") {
+          this.setState({
+            loggedInStatus: "LOGGED_IN",
+          });
+        } else if (!loggedIn && loggedInStatus === "LOGGED_IN") {
+          this.setState({
+            loggedInStatus: "NOT_LOGGED_IN",
+          });
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
+    } 
   }
 
   componentDidMount() {

@@ -15,22 +15,45 @@ const NavigationContainer = (props) => {
   };
 
   const handleSignOut = () => {
-    
-    axios
-      .delete("http://localhost:5000/api/user/v1.0/logout", {
-        withCredentials: true,
+    const access_token = localStorage.getItem("access-token")
+    axios({
+        method: "DELETE",
+        url:"http://127.0.0.1:5000/api/user/v1.0/logout",
+        headers: {
+          Authorization: 'Bearer ' + access_token
+        }
       })
       .then((response) => {
-        console.log("logout: ", response)
         if (response.status === 200) {
+          // props.history.push("/");
+          // props.handleSuccesfulLogout();
+          localStorage.removeItem("access-token");
+        }
+        console.log(response.data);
+      }).catch((error) => {
+        console.log(error);
+      }
+    );
+    const refresh_token = localStorage.getItem("refresh-token");
+    axios({
+        method: "DELETE",
+        url:"http://127.0.0.1:5000/api/user/v1.0/logout",
+        headers: {
+          Authorization: 'Bearer ' + refresh_token
+        }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data);
+          localStorage.removeItem("refresh-token");
           props.history.push("/");
           props.handleSuccesfulLogout();
         }
         return response.data;
-      })
-      .catch((error) => {
-        console.log("Error signing out", error);
-      });
+      }).catch((error) => {
+        console.log(error);
+      }
+    );
   };
 
   return (

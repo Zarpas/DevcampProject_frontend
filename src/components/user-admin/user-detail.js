@@ -12,16 +12,18 @@ export default class UserDetail extends Component {
   }
 
   getUserDetail() {
-    axios.get(
-      "http://localhost:5000/api/user/v1.0/user",
-      { id: this.state.userID },
-      { withCredentials: true }
-    )
-    .then((reponse) => {
-      console.log("getUserDetail ", response);
+    const access_token = localStorage.getItem("access-token")
+    axios({
+      method: "GET",
+      url:`http://127.0.0.1:5000/api/user/v1.0/user?id=${this.state.userID}`,
+      headers: {
+        Authorization: 'Bearer ' + access_token
+      }
     })
-    .catch((error) => {
-      console.log("getUserDetail error ", error);
+    .then((response) => {
+      console.log(response.data);
+    }).catch((error) => {
+      console.log(error);
     });
   }
 
