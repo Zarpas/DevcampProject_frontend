@@ -15,14 +15,14 @@ const NavigationContainer = (props) => {
   };
 
   const handleSignOut = () => {
-    const access_token = localStorage.getItem("access-token")
+    const access_token = localStorage.getItem("access-token");
     axios({
-        method: "DELETE",
-        url:"http://127.0.0.1:5000/api/user/v1.0/logout",
-        headers: {
-          Authorization: 'Bearer ' + access_token
-        }
-      })
+      method: "DELETE",
+      url: "http://127.0.0.1:5000/api/user/v1.0/logout",
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    })
       .then((response) => {
         if (response.status === 200) {
           // props.history.push("/");
@@ -30,18 +30,18 @@ const NavigationContainer = (props) => {
           localStorage.removeItem("access-token");
         }
         console.log(response.data);
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log(error);
-      }
-    );
+      });
     const refresh_token = localStorage.getItem("refresh-token");
     axios({
-        method: "DELETE",
-        url:"http://127.0.0.1:5000/api/user/v1.0/logout",
-        headers: {
-          Authorization: 'Bearer ' + refresh_token
-        }
-      })
+      method: "DELETE",
+      url: "http://127.0.0.1:5000/api/user/v1.0/logout",
+      headers: {
+        Authorization: "Bearer " + refresh_token,
+      },
+    })
       .then((response) => {
         if (response.status === 200) {
           console.log(response.data);
@@ -50,19 +50,24 @@ const NavigationContainer = (props) => {
           props.handleSuccesfulLogout();
         }
         return response.data;
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log(error);
-      }
-    );
+      });
   };
 
   return (
     <div className="right-side">
       {props.loggedInStatus === "LOGGED_IN" ? (
-        <a onClick={handleSignOut}>LogOut</a>
-      ) : dynamicLink("/auth", "Login") }
+        <div>
+          <p>Hola {props.name}</p>
+          <a onClick={handleSignOut}>LogOut</a>
+        </div>
+      ) : (
+        dynamicLink("/auth", "Login")
+      )}
     </div>
-  )
+  );
 };
 
 export default withRouter(NavigationContainer);
