@@ -46,7 +46,7 @@ export default class NewUser extends Component {
   handleValidationConfirm(event) {
     if (this.state.password !== this.state.confirm) {
       this.setState({
-        errorTextConfirm: "Password should be equal"
+        errorTextConfirm: "Password have to be equal"
       })
     } else {
       this.setState({
@@ -58,26 +58,32 @@ export default class NewUser extends Component {
 
   handleSubmit(event) {
     const access_token = localStorage.getItem("access-token");
-    axios({
-      method: "POST",
-      url: "http://127.0.0.1:5000/api/user/v1.0/user",
-      data: {
-        id: this.state.id,
-        name: this.state.name,
-        surnames: this.state.surnames,
-        email: this.state.email,
-        password: this.state.password
-      },
-      headers: {
-        Authorization: 'Bearer ' + access_token
-      }
-    })
-    .then((response) => {
-      console.log("NewUser -> handleSubmit(): ", response);
-    })
-    .catch((error) => {
-      console.log("NewUser -> handleSubmit() error: ", error)
-    })
+    if (this.state.password != this.state.confirm) {
+      this.setState({
+        errorTextConfirm: "Password have to be equal"
+      });
+    } else {
+      axios({
+        method: "POST",
+        url: "http://127.0.0.1:5000/api/user/v1.0/user",
+        data: {
+          id: this.state.id,
+          name: this.state.name,
+          surnames: this.state.surnames,
+          email: this.state.email,
+          password: this.state.password
+        },
+        headers: {
+          Authorization: 'Bearer ' + access_token
+        }
+      })
+      .then((response) => {
+        console.log("NewUser -> handleSubmit(): ", response);
+      })
+      .catch((error) => {
+        console.log("NewUser -> handleSubmit() error: ", error)
+      })
+    }
     event.preventDefault();
   }
 

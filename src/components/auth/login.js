@@ -25,6 +25,7 @@ export default class Login extends Component {
         if (response.data.status === "created") {
           localStorage.setItem("access-token", response.data.access_token);
           localStorage.setItem("refresh-token", response.data.refresh_token);
+
           this.props.handleSuccesfulAuth();
         } else {
           this.setState({ errorText: "Wrong id or password" });

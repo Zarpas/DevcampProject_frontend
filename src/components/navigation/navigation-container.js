@@ -2,12 +2,13 @@ import axios from "axios";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { withRouter } from "react-router";
+import DropdownMenu, { DropdownItem, DropdownItemGroup } from '@atlaskit/dropdown-menu';
 
 const NavigationContainer = (props) => {
   const dynamicLink = (route, linkText) => {
     return (
       <div className="nav-link-wrapper">
-        <NavLink exact to={route} activeClassName="nav-link-active">
+        <NavLink exact to={route}>
           {linkText}
         </NavLink>
       </div>
@@ -56,16 +57,37 @@ const NavigationContainer = (props) => {
       });
   };
 
+
   return (
-    <div className="right-side">
-      {props.loggedInStatus === "LOGGED_IN" ? (
+    
+    <div className="nav-wrapper">
+      <div className="left-side">
+        My Logo
+      </div>
+      <div className="right-side">
         <div>
-          <p>Hola {props.name}</p>
-          <a onClick={handleSignOut}>LogOut</a>
+          {props.adminStatus === true ? (
+            dynamicLink("/user-admin", "User Administration")
+          ): null}
         </div>
-      ) : (
-        dynamicLink("/auth", "Login")
-      )}
+        <div>
+          {dynamicLink("/", "home")}
+        </div>
+        {props.loggedInStatus === "LOGGED_IN" ? (
+          <div>
+            <div className="nav-link-wrapper">
+            <DropdownMenu trigger={props.username}>
+              <DropdownItemGroup>
+                <DropdownItem>{dynamicLink("/password-manager", "Change Password")}</DropdownItem>
+                <DropdownItem><div className="nav-link-wrapper"><a onClick={handleSignOut}>LogOut</a></div></DropdownItem>
+              </DropdownItemGroup>
+            </DropdownMenu>
+            </div>
+          </div>
+        ) : (
+          dynamicLink("/auth", "Login")
+        )}
+      </div>
     </div>
   );
 };

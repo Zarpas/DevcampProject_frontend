@@ -6,14 +6,23 @@ import loginImg from "../../../static/assets/images/auth/login.jpg"
 export default class Auth extends Component {
   constructor(props) {
     super(props);
+    
+    this.state = {
+      adminStatus:false,
+      fileStatus:false,
+      listStatus:false,
+      noteStatus:false,
+      pictureStatus:false,
+      username:""
+    }
 
     this.handleSuccesfulAuth = this.handleSuccesfulAuth.bind(this);
     this.handleUnsuccesfulAuth = this.handleUnsuccesfulAuth.bind(this);
   }
 
-  handleSuccesfulAuth() {
+  handleSuccesfulAuth(username) {
     this.props.handleSuccesfulLogin();
-    this.props.history.push("/");
+    window.location.reload();
   }
 
   handleUnsuccesfulAuth() {
@@ -28,6 +37,12 @@ export default class Auth extends Component {
           <Login
             handleSuccesfulAuth={this.handleSuccesfulAuth}
             handleUnsuccesfulAuth={this.handleUnsuccesfulAuth}
+            // adminStatus={this.state.adminStatus}
+            // fileStatus={this.state.fileStatus}
+            // listStatus={this.state.listStatus}
+            // noteStatus={this.state.noteStatus}
+            // pictureStatus={this.state.pictureStatus}
+            // name={this.state.name}
           />
         </div>
       </div>

@@ -12,7 +12,6 @@ import NoMatch from "./pages/no-match";
 import Icons from "./helpers/icons";
 import NewUser from "./user-admin/new_user";
 
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -20,143 +19,124 @@ export default class App extends Component {
     Icons();
 
     this.state = {
-      name: "",
+      username: "",
       loggedInStatus: "NOT_LOGGED_IN",
       adminStatus: false,
       fileStatus: false,
       listStatus: false,
       noteStatus: false,
-      pictureStatus: false
+      pictureStatus: false,
     };
 
     this.handleSuccesfulLogin = this.handleSuccesfulLogin.bind(this);
     this.handleUnsuccesfulLogin = this.handleUnsuccesfulLogin.bind(this);
     this.handleSuccesfulLogout = this.handleSuccesfulLogout.bind(this);
+    this.checkLoginStatus = this.checkLoginStatus.bind(this);
+    this.clearState = this.clearState.bind(this);
   }
 
+  clearState() {
+    this.setState({
+      username: "",
+      loggedInStatus: "NOT_LOGGED_IN",
+      adminStatus: false,
+      fileStatus: false,
+      listStatus: false,
+      noteStatus: false,
+      pictureStatus: false,
+    })
+  }
 
-  handleSuccesfulLogin() {
+  handleSuccesfulLogin(username) {
     this.setState({
       loggedInStatus: "LOGGED_IN",
     });
+    this.checkLoginStatus();
+    
   }
 
   handleUnsuccesfulLogin() {
-    this.setState({
-      loggedInStatus: "NOT_LOGGED_IN",
-    });
+    this.clearState();
   }
 
   handleSuccesfulLogout() {
-    this.setState({
-      loggedInStatus: "NOT_LOGGED_IN",
-      can_admin: false
-    });
+    this.clearState();
+    this.checkLoginStatus();
   }
 
   checkLoginStatus() {
-
-    const access_token = localStorage.getItem("access-token")
+    const access_token = localStorage.getItem("access-token");
     if (access_token === null) {
-      return axios
-      .get("http://localhost:5000/api/user/v1.0/logged_in")
-      .then((response) => {
-        console.log("App -> checkLoginStatus(): ", response);
-        const loggedIn = response.data.logged_in;
-        const loggedInStatus = this.state.loggedInStatus;
-
-        if (loggedIn && loggedInStatus === "LOGGED_IN") {
-          return loggedIn;
-        } else if (loggedIn && loggedInStatus === "NOT_LOGGED_IN") {
-          this.setState({
-            loggedInStatus: "LOGGED_IN",
-          });
-        } else if (!loggedIn && loggedInStatus === "LOGGED_IN") {
-          this.setState({
-            loggedInStatus: "NOT_LOGGED_IN",
-          });
-        }
-
-      })
-      .catch((error) => {
-        console.log("App -> checkLoginStatus() error: ",error);
-      });
+      this.clearState();
     } else {
       return axios({
         method: "GET",
-        url:"http://127.0.0.1:5000/api/user/v1.0/logged_in",
+        url: "http://127.0.0.1:5000/api/user/v1.0/logged_in",
         headers: {
-          Authorization: 'Bearer ' + access_token
-        }
+          Authorization: "Bearer " + access_token,
+        },
       })
-      .then((response) => {
-        console.log("App -> checkLoginStatus(): ", response.data);
-        const loggedIn = response.data.logged_in;
-        const loggedInStatus = this.state.loggedInStatus;
+        .then((response) => {
+          console.log("App -> checkLoginStatus(): ", response.data);
+          const loggedIn = response.data.logged_in;
+          const loggedInStatus = this.state.loggedInStatus;
 
-        if (loggedIn && loggedInStatus === "LOGGED_IN") {
-          return loggedIn;
-        } else if (loggedIn && loggedInStatus === "NOT_LOGGED_IN") {
-          this.setState({
-            loggedInStatus: "LOGGED_IN",
-            adminStatus: response.data.can_admin,
-            fileStatus: response.data.can_fileupload,
-            listStatus: response.data.can_listoperate,
-            noteStatus: response.data.can_writenote,
-            pictureStatus: response.data.can_takepicture,
-            name: response.data.name
-          });
-        } else if (!loggedIn && loggedInStatus === "LOGGED_IN") {
-          this.setState({
-            loggedInStatus: "NOT_LOGGED_IN",
-          });
-        }
-      }).catch((error) => {
-        console.log("App -> checkLoginStatus() error: ", error);
-      })
-    } 
+          if (loggedIn && loggedInStatus === "LOGGED_IN") {
+            return loggedIn;
+          } else if (loggedIn && loggedInStatus === "NOT_LOGGED_IN") {
+            this.setState({
+              loggedInStatus: "LOGGED_IN",
+              adminStatus: response.data.can_admin,
+              fileStatus: response.data.can_fileupload,
+              listStatus: response.data.can_listoperate,
+              noteStatus: response.data.can_writenote,
+              pictureStatus: response.data.can_takepicture,
+              username: response.data.name,
+            });
+          } else if (!loggedIn && loggedInStatus === "LOGGED_IN") {
+            this.clearState();
+          }
+        })
+        .catch((error) => {
+          console.log("App -> checkLoginStatus() error: ", error);
+          this.handleUnsuccesfulLogin();
+        });
+    }
   }
 
   componentDidMount() {
     this.checkLoginStatus();
   }
 
+
   loginAuthorizedPages() {
     return [
       <Route key="1" path="/password-manager" component={PasswordManager} />,
-    ]
+    ];
   }
 
   adminAuthorizedPages() {
     return [
       <Route key="1" path="/user-admin" component={UserAdmin} />,
       <Route key="2" path="/user/:slug" component={UserDetail} />,
-      <Route key="3" path="/user-new" component={NewUser} />
-    ]
+      <Route key="3" path="/user-new" component={NewUser} />,
+    ];
   }
 
   fileAuthorizedPages() {
-    return [
-
-    ]
+    return [];
   }
 
   listAuthorizedPages() {
-    return [
-
-    ]
+    return [];
   }
 
   noteAuthorizedPages() {
-    return [
-
-    ]
+    return [];
   }
 
   pictureAuthorizedPages() {
-    return [
-
-    ]
+    return [];
   }
 
   render() {
@@ -164,7 +144,16 @@ export default class App extends Component {
       <div className="container">
         <Router>
           <div>
-            <NavigationContainer loggedInStatus={this.state.loggedInStatus} handleSuccesfulLogout={this.handleSuccesfulLogout} name={this.state.name}/>
+            <NavigationContainer
+              loggedInStatus={this.state.loggedInStatus}
+              handleSuccesfulLogout={this.handleSuccesfulLogout}
+              adminStatus={this.state.adminStatus}
+              fileStatus={this.state.fileStatus}
+              listStatus={this.state.listStatus}
+              noteStatus={this.state.noteStatus}
+              pictureStatus={this.state.pictureStatus}
+              username={this.state.username}
+            />
             <Switch>
               <Route exact path="/" component={Home} />
               <Route
@@ -177,13 +166,14 @@ export default class App extends Component {
                   />
                 )}
               />
-              {this.state.loggedInStatus === "LOGGED_IN" ? this.loginAuthorizedPages(): null}
-              {this.state.adminStatus ? this.adminAuthorizedPages(): null}
-              {this.state.fileStatus ? this.fileAuthorizedPages(): null}
-              {this.state.listStatus ? this.listAuthorizedPages(): null}
-              {this.state.noteStatus ? this.noteAuthorizedPages(): null}
-              {this.state.pictureStatus ? this.pictureAuthorizedPages(): null}
-             
+              {this.state.loggedInStatus === "LOGGED_IN"
+                ? this.loginAuthorizedPages()
+                : null}
+              {this.state.adminStatus ? this.adminAuthorizedPages() : null}
+              {this.state.fileStatus ? this.fileAuthorizedPages() : null}
+              {this.state.listStatus ? this.listAuthorizedPages() : null}
+              {this.state.noteStatus ? this.noteAuthorizedPages() : null}
+              {this.state.pictureStatus ? this.pictureAuthorizedPages() : null}
 
               <Route component={NoMatch} />
             </Switch>
