@@ -44,7 +44,7 @@ export default class App extends Component {
       listStatus: false,
       noteStatus: false,
       pictureStatus: false,
-    })
+    });
   }
 
   handleSuccesfulLogin(username) {
@@ -52,7 +52,6 @@ export default class App extends Component {
       loggedInStatus: "LOGGED_IN",
     });
     this.checkLoginStatus();
-    
   }
 
   handleUnsuccesfulLogin() {
@@ -61,15 +60,17 @@ export default class App extends Component {
 
   handleSuccesfulLogout() {
     this.clearState();
-    this.checkLoginStatus();
   }
 
   checkLoginStatus() {
     const access_token = localStorage.getItem("access-token");
-    if (access_token === null) {
+    console.log("app -> checkLoginStatus access_token ", access_token);
+    const refresh_token = localStorage.getItem("refresh-token");
+    console.log("app -> checkLoginStatus refresh_token ", refresh_token);
+    if (access_token == null) {
       this.clearState();
     } else {
-      return axios({
+      axios({
         method: "GET",
         url: "http://127.0.0.1:5000/api/user/v1.0/logged_in",
         headers: {
@@ -99,6 +100,31 @@ export default class App extends Component {
         })
         .catch((error) => {
           console.log("App -> checkLoginStatus() error: ", error);
+          // refresh token and try again
+          axios({
+            method: "POST",
+            url: "http://127.0.0.1:5000/api/user/v1.0/refresh",
+            headers: {
+              Authorization: "Bearer " + refresh_token,
+            },
+          })
+            .then((response) => {
+              console.log(
+                "App -> checkLoginStatus() after token expires: ",
+                response.data
+              );
+              localStorage.setItem("access-token", response.data.access_token);
+              localStorage.setItem(
+                "refresh-token",
+                response.data.refresh_token
+              );
+              this.checkLoginStatus();
+            })
+            .catch((error) => {
+              console.log("App -> checkLoginStatus() error: ", error);
+              this.handleUnsuccesfulLogin();
+            });
+          // refresh token and try agan (end)
           this.handleUnsuccesfulLogin();
         });
     }
@@ -107,7 +133,6 @@ export default class App extends Component {
   componentDidMount() {
     this.checkLoginStatus();
   }
-
 
   loginAuthorizedPages() {
     return [

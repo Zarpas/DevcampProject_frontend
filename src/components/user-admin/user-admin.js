@@ -40,6 +40,7 @@ export default class UserAdmin extends Component {
       users: [],
       totalCount: 0,
       currentPage: "0",
+      perpage: "20",
       isLoading: true,
       sortOrder: "ASC",
       sortKey: "id"
@@ -70,7 +71,7 @@ export default class UserAdmin extends Component {
     axios.defaults.headers.common["Authorization"] = token;
     return axios
       .get(
-        `http://127.0.0.1:5000/api/user/v1.0/users?page=${this.state.currentPage}`
+        `http://127.0.0.1:5000/api/user/v1.0/users?page=${this.state.currentPage}&per_page=${this.state.perpage}`
       )
       .then((response) => {
         console.log("user-admin.js -> getUsers", response);
@@ -124,7 +125,7 @@ export default class UserAdmin extends Component {
           caption={caption}
           head={head}
           rows={rows}
-          rowsPerPage={10}
+          rowsPerPage={20}
           page={this.state.pageNumber}
           loadingSpinnerSize="large"
           isLoading={this.state.isLoading}
@@ -133,7 +134,7 @@ export default class UserAdmin extends Component {
           sortOrder={this.state.sortOrder}
           // defaultSortKey="id"
           // defaultSortOrder="ASC"
-          onSort={this.handleOnSort}
+          // onSort={this.handleOnSort}
           onSetPage={() => console.log("OnSetPage")}
         />
       </div>
