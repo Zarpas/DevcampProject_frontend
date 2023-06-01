@@ -37,12 +37,6 @@ export default class Auth extends Component {
           <Login
             handleSuccesfulAuth={this.handleSuccesfulAuth}
             handleUnsuccesfulAuth={this.handleUnsuccesfulAuth}
-            // adminStatus={this.state.adminStatus}
-            // fileStatus={this.state.fileStatus}
-            // listStatus={this.state.listStatus}
-            // noteStatus={this.state.noteStatus}
-            // pictureStatus={this.state.pictureStatus}
-            // name={this.state.name}
           />
         </div>
       </div>

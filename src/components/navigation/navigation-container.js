@@ -3,6 +3,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { withRouter } from "react-router";
 import DropdownMenu, { DropdownItem, DropdownItemGroup } from '@atlaskit/dropdown-menu';
+import Avatar from '@atlaskit/avatar';
 
 const NavigationContainer = (props) => {
   const dynamicLink = (route, linkText) => {
@@ -65,13 +66,26 @@ const NavigationContainer = (props) => {
         My Logo
       </div>
       <div className="right-side">
-        <div>
-          {props.adminStatus === true ? (
-            dynamicLink("/user-admin", "User Administration")
-          ): null}
+        <div className="left-side">
+        {props.adminStatus === true ? (
+          <DropdownMenu trigger="User Administration">
+            <DropdownItemGroup>
+              <DropdownItem>
+                  {dynamicLink("/user-admin", "User Administration")}
+                </DropdownItem>
+                <DropdownItem>{props.adminStatus === true ? (
+                  dynamicLink("/user-new", "New User")
+                ): null}</DropdownItem>
+            </DropdownItemGroup>
+          </DropdownMenu>): null}
+          <DropdownMenu trigger="Home">
+            <DropdownItemGroup>
+              <DropdownItem>{dynamicLink("/", "home")}</DropdownItem>
+            </DropdownItemGroup>
+          </DropdownMenu>
         </div>
         <div>
-          {dynamicLink("/", "home")}
+          
         </div>
         {props.loggedInStatus === "LOGGED_IN" ? (
           <div>
