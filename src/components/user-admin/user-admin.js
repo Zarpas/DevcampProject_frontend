@@ -41,13 +41,21 @@ export default class UserAdmin extends Component {
       totalCount: 0,
       currentPage: "0",
       perpage: "20",
+      selfLink: "http://127.0.0.1:5000/api/user/v1.0/users",
+      nextLink: null,
+      prevLink: null,
       isLoading: true,
       sortOrder: "ASC",
-      sortKey: "id"
+      sortKey: "id",
     };
 
     this.getUsers = this.getUsers.bind(this);
     this.handleOnSort = this.handleOnSort.bind(this);
+    this.searchUsers = this.searchUsers.bind(this);
+  }
+
+  searchUsers() {
+    // add search users form in render and the code to parse it
   }
 
   handleOnSort(data) {
@@ -63,20 +71,26 @@ export default class UserAdmin extends Component {
       currentPage: this.state.currentPage + 1,
       users: [],
       isLoading: true,
-      pageNumber: 1,
     });
 
     const access_token = localStorage.getItem("access-token");
     const token = "Bearer " + access_token;
-    axios.defaults.headers.common["Authorization"] = token;
-    return axios
-      .get(
-        `http://127.0.0.1:5000/api/user/v1.0/users?page=${this.state.currentPage}&per_page=${this.state.perpage}`
-      )
+    return axios({
+      method: 'GET',
+        url: this.state.selfLink,
+        headers: {
+          Authorization: 'Bearer ' + access_token
+        }
+      })
       .then((response) => {
         console.log("user-admin.js -> getUsers", response);
         this.setState({
-          users: this.state.users.concat(response.data),
+          users: response.data.items,
+          selfLink: response.data._links.self,
+          prevLink: response.data._links.prev,
+          nextLink: response.data._links.next,
+          totalCount: response.data._meta.total_items,
+          
           isLoading: false,
         });
       })
@@ -103,8 +117,8 @@ export default class UserAdmin extends Component {
           content: user.id,
         },
         {
-          key: user.name,
-          content: user.name,
+          key: user.username,
+          content: user.username,
         },
         {
           key: user.surnames,
@@ -132,9 +146,6 @@ export default class UserAdmin extends Component {
           isFixedSize
           sortKey={this.state.sortKey}
           sortOrder={this.state.sortOrder}
-          // defaultSortKey="id"
-          // defaultSortOrder="ASC"
-          // onSort={this.handleOnSort}
           onSetPage={() => console.log("OnSetPage")}
         />
       </div>

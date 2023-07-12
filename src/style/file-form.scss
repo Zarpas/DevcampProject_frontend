@@ -1,0 +1,10 @@
+.file-upload-wrapper {
+  @include base-grid();
+  grid-template-columns: 1fr;
+  padding: 42px;
+}
+
+.file-uploaders {
+  @include base-grid();
+  grid-template-columns: 200px;
+}

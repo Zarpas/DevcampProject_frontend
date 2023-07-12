@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { Component } from "react";
+import { getToken } from "../helpers/use_token";
 
 export default class UserDetail extends Component {
   constructor(props) {
@@ -12,11 +13,11 @@ export default class UserDetail extends Component {
       email: "",
       registered: "",
       active: false,
-      can_admin: false,
-      can_fileupload: false,
-      can_listoperate: false,
-      can_writenote: false,
-      can_takepicture: false,
+      admin: false,
+      fileupload: false,
+      listoperate: false,
+      writenote: false,
+      takepicture: false,
     };
 
     this.getUserDetail = this.getUserDetail.bind(this);
@@ -26,17 +27,17 @@ export default class UserDetail extends Component {
 
 
   handleSubmit(event) {
-    const access_token = localStorage.getItem("access-token");
+    const access_token = getToken("access-token");
     axios({
       method: "PATCH",
       url: "http://127.0.0.1:5000/api/user/v1.0/user",
       data: {
         id: this.state.userID,
-        can_admin: this.state.can_admin,
-        can_fileupload: this.state.can_fileupload,
-        can_listoperate: this.state.can_listoperate,
-        can_writenote: this.state.can_writenote,
-        can_takepicture: this.state.can_takepicture
+        admin: this.state.admin,
+        fileupload: this.state.fileupload,
+        listoperate: this.state.listoperate,
+        writenote: this.state.writenote,
+        takepicture: this.state.takepicture
       },
       headers: {
         Authorization: "Bearer " + access_token,
@@ -52,10 +53,10 @@ export default class UserDetail extends Component {
   }
 
   getUserDetail() {
-    const access_token = localStorage.getItem("access-token");
+    const access_token = getToken("access-token");
     axios({
       method: "GET",
-      url: `http://127.0.0.1:5000/api/user/v1.0/user?id=${this.state.userID}`,
+      url: `http://127.0.0.1:5000/api/user/v1.0/user?id=${this.state.userID}&roles=true`,
       headers: {
         Authorization: "Bearer " + access_token,
       },
@@ -64,29 +65,29 @@ export default class UserDetail extends Component {
         console.log("UserDetail -> getUserDetail():", response.data);
         const {
           id,
-          name,
+          username,
           surnames,
           email,
           password_hash,
           registered,
           active,
-          can_admin,
-          can_fileupload,
-          can_listoperate,
-          can_writenote,
-          can_takepicture,
+          admin,
+          fileupload,
+          listoperate,
+          writenote,
+          takepicture,
         } = response.data;
         this.setState({
-          name: name,
+          username: username,
           surnames: surnames,
           email: email,
           registered: registered,
           active: active,
-          can_admin: can_admin,
-          can_fileupload: can_fileupload,
-          can_listoperate: can_listoperate,
-          can_writenote: can_writenote,
-          can_takepicture: can_takepicture,
+          admin: admin,
+          fileupload: fileupload,
+          listoperate: listoperate,
+          writenote: writenote,
+          takepicture: takepicture,
         });
       })
       .catch((error) => {
@@ -111,7 +112,7 @@ export default class UserDetail extends Component {
     return (
       <div>
         <div className="nombre">
-          {this.state.surnames}, {this.state.name}
+          {this.state.surnames}, {this.state.username}
         </div>
         <div className="email">{this.state.email}</div>
         <div className="registered">{this.state.registered}</div>
@@ -130,9 +131,9 @@ export default class UserDetail extends Component {
             <div>
               <input
                 type="checkbox"
-                name="can_admin"
+                name="admin"
                 placeholder="Can Admin"
-                checked={this.state.can_admin}
+                checked={this.state.admin}
                 onChange={this.handleChange}
               />
               <span>Can admin?</span>
@@ -142,9 +143,9 @@ export default class UserDetail extends Component {
             <div>
               <input
                 type="checkbox"
-                name="can_fileupload"
+                name="fileupload"
                 placeholder="can_fileupload"
-                checked={this.state.can_fileupload}
+                checked={this.state.fileupload}
                 onChange={this.handleChange}
               />
               <span>Can upload Files?</span>
@@ -152,9 +153,9 @@ export default class UserDetail extends Component {
             <div>
               <input
                 type="checkbox"
-                name="can_listoperate"
+                name="listoperate"
                 placeholder="Can listoperate"
-                checked={this.state.can_listoperate}
+                checked={this.state.listoperate}
                 onChange={this.handleChange}
               />
               <span>Can work with lists?</span>
@@ -164,9 +165,9 @@ export default class UserDetail extends Component {
             <div>
               <input
                 type="checkbox"
-                name="can_takepicture"
-                placeholder="can_takepicture"
-                checked={this.state.can_takepicture}
+                name="takepicture"
+                placeholder="Can Takepicture"
+                checked={this.state.takepicture}
                 onChange={this.handleChange}
               />
               <span>Can upload pictures?</span>
@@ -174,9 +175,9 @@ export default class UserDetail extends Component {
             <div>
               <input
                 type="checkbox"
-                name="can_writenote"
+                name="writenote"
                 placeholder="Can writenote"
-                checked={this.state.can_writenote}
+                checked={this.state.writenote}
                 onChange={this.handleChange}
               />
               <span>Can write notes?</span>

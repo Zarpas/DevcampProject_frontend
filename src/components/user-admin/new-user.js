@@ -8,7 +8,7 @@ export default class NewUser extends Component {
 
     this.state = {
       id: "",
-      name: "",
+      username: "",
       surnames: "",
       email: "",
       password: "",
@@ -65,10 +65,10 @@ export default class NewUser extends Component {
     } else {
       axios({
         method: "POST",
-        url: "http://127.0.0.1:5000/api/user/v1.0/user",
-        data: {
+        url: "http://127.0.0.1:5000/api/user/v1.0/user", 
+        data  : {
           id: this.state.id,
-          name: this.state.name,
+          username: this.state.username,
           surnames: this.state.surnames,
           email: this.state.email,
           password: this.state.password
@@ -76,7 +76,7 @@ export default class NewUser extends Component {
         headers: {
           Authorization: 'Bearer ' + access_token
         }
-      })
+    })
       .then((response) => {
         console.log("NewUser -> handleSubmit(): ", response);
       })
@@ -106,9 +106,9 @@ export default class NewUser extends Component {
             />
             <input
               type="text"
-              name="name"
+              name="username"
               placeholder="User name"
-              value={ this.state.name }
+              value={ this.state.username }
               onChange={ this.handleChange }
             />
             <input

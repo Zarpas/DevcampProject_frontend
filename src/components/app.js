@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
+import { getToken, saveToken } from "./helpers/use_token";
 
 import NavigationContainer from "./navigation/navigation-container";
 import PasswordManager from "./user-admin/password-manager";
@@ -10,7 +11,10 @@ import UserAdmin from "./user-admin/user-admin";
 import UserDetail from "./user-admin/user-detail";
 import NoMatch from "./pages/no-match";
 import Icons from "./helpers/icons";
-import NewUser from "./user-admin/new_user";
+import NewUser from "./user-admin/new-user";
+import FileAdmin from "./file-admin/file-admin";
+import FileDetail from "./file-admin/file-detail";
+import NewFile from "./file-admin/new-file";
 
 export default class App extends Component {
   constructor(props) {
@@ -63,9 +67,9 @@ export default class App extends Component {
   }
 
   checkLoginStatus() {
-    const access_token = localStorage.getItem("access-token");
+    const access_token = getToken("access-token");
     console.log("app -> checkLoginStatus access_token ", access_token);
-    const refresh_token = localStorage.getItem("refresh-token");
+    const refresh_token = getToken("refresh-token");
     console.log("app -> checkLoginStatus refresh_token ", refresh_token);
     if (access_token == null) {
       this.clearState();
@@ -87,12 +91,12 @@ export default class App extends Component {
           } else if (loggedIn && loggedInStatus === "NOT_LOGGED_IN") {
             this.setState({
               loggedInStatus: "LOGGED_IN",
-              adminStatus: response.data.can_admin,
-              fileStatus: response.data.can_fileupload,
-              listStatus: response.data.can_listoperate,
-              noteStatus: response.data.can_writenote,
-              pictureStatus: response.data.can_takepicture,
-              username: response.data.name,
+              adminStatus: response.data.admin,
+              fileStatus: response.data.fileupload,
+              listStatus: response.data.listoperate,
+              noteStatus: response.data.writenote,
+              pictureStatus: response.data.takepicture,
+              username: response.data.username,
             });
           } else if (!loggedIn && loggedInStatus === "LOGGED_IN") {
             this.clearState();
@@ -113,11 +117,8 @@ export default class App extends Component {
                 "App -> checkLoginStatus() after token expires: ",
                 response.data
               );
-              localStorage.setItem("access-token", response.data.access_token);
-              localStorage.setItem(
-                "refresh-token",
-                response.data.refresh_token
-              );
+              saveToken("access-token", response.data.access_token);
+              saveToken("refresh-token", response.data.refresh_token);
               this.checkLoginStatus();
             })
             .catch((error) => {
@@ -149,7 +150,11 @@ export default class App extends Component {
   }
 
   fileAuthorizedPages() {
-    return [];
+    return [
+      <Route key="1" path="/file-admin" component={FileAdmin} />,
+      <Route key="2" path="/file/:slug" component={FileDetail} />,
+      <Route key="3" path="/file-new" component={NewFile} />,
+    ];
   }
 
   listAuthorizedPages() {

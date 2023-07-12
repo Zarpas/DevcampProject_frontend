@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { saveToken } from "../helpers/use_token"
 
 
 export default class Login extends Component {
@@ -16,15 +17,17 @@ export default class Login extends Component {
 
   handleSubmit(event) {
     axios
-      .post("http://localhost:5000/api/user/v1.0/login", {
+      .post("http://127.0.0.1:5000/api/user/v1.0/login", {
         id: this.state.id,
         password: this.state.password,
       })
       .then((response) => {
         console.log("Login response:", response);
         if (response.data.status === "created") {
-          localStorage.setItem("access-token", response.data.access_token);
-          localStorage.setItem("refresh-token", response.data.refresh_token);
+          // localStorage.setItem("access-token", response.data.access_token);
+          saveToken("access-token", response.data.access_token)
+          // localStorage.setItem("refresh-token", response.data.refresh_token);
+          saveToken("refresh-token", response.data.refresh_token)
 
           this.props.handleSuccesfulAuth();
         } else {

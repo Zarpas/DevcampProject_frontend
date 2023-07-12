@@ -6,6 +6,7 @@ import DropdownMenu, {
   DropdownItem,
   DropdownItemGroup,
 } from "@atlaskit/dropdown-menu";
+import { getToken, removeToken } from "../helpers/use_token"
 import Avatar from "@atlaskit/avatar";
 
 const NavigationContainer = (props) => {
@@ -20,7 +21,7 @@ const NavigationContainer = (props) => {
   };
 
   const handleSignOut = () => {
-    const access_token = localStorage.getItem("access-token");
+    const access_token = getToken("access-token");
     axios({
       method: "DELETE",
       url: "http://127.0.0.1:5000/api/user/v1.0/logout",
@@ -30,14 +31,14 @@ const NavigationContainer = (props) => {
     })
       .then((response) => {
         if (response.status === 200) {
-          localStorage.removeItem("access-token");
+          removeToken("access-token");
         }
         console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-    const refresh_token = localStorage.getItem("refresh-token");
+    const refresh_token = getToken("refresh-token");
     axios({
       method: "DELETE",
       url: "http://127.0.0.1:5000/api/user/v1.0/logout",
@@ -48,7 +49,7 @@ const NavigationContainer = (props) => {
       .then((response) => {
         if (response.status === 200) {
           console.log(response.data);
-          localStorage.removeItem("refresh-token");
+          removeToken("refresh-token");
           props.handleSuccesfulLogout();
           props.history.push("/");
         }
@@ -71,9 +72,19 @@ const NavigationContainer = (props) => {
                   {dynamicLink("/user-admin", "User Administration")}
                 </DropdownItem>
                 <DropdownItem>
-                  {props.adminStatus === true
-                    ? dynamicLink("/user-new", "New User")
-                    : null}
+                  {dynamicLink("/user-new", "New User")}
+                </DropdownItem>
+              </DropdownItemGroup>
+            </DropdownMenu>
+          ) : null}
+          {props.fileStatus === true ? (
+            <DropdownMenu trigger="File Administration">
+              <DropdownItemGroup>
+                <DropdownItem>
+                  {dynamicLink("/file-admin", "File Administration")}
+                </DropdownItem>
+                <DropdownItem>
+                  {dynamicLink("/file-new", "New File")}
                 </DropdownItem>
               </DropdownItemGroup>
             </DropdownMenu>
