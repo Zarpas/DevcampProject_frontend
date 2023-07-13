@@ -3,9 +3,10 @@ import {Link} from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DynamicTable from "@atlaskit/dynamic-table";
+import { getToken } from "../helpers/use_token";
 
 
-import UserItem from "./user-item";
+// import UserItem from "./user-item";
 
 const head = {
   cells: [
@@ -39,7 +40,7 @@ export default class UserAdmin extends Component {
     this.state = {
       users: [],
       totalCount: 0,
-      currentPage: "0",
+      pageNumber: 1,
       perpage: "20",
       selfLink: "http://127.0.0.1:5000/api/user/v1.0/users",
       nextLink: null,
@@ -73,8 +74,7 @@ export default class UserAdmin extends Component {
       isLoading: true,
     });
 
-    const access_token = localStorage.getItem("access-token");
-    const token = "Bearer " + access_token;
+    const access_token = getToken("access-token");
     return axios({
       method: 'GET',
         url: this.state.selfLink,
@@ -134,7 +134,7 @@ export default class UserAdmin extends Component {
 
        
     return (
-      <div style={{ maxWidth: 1000 }}>
+      <div style={{ maxWidth: "80%" }}>
         <DynamicTable
           caption={caption}
           head={head}

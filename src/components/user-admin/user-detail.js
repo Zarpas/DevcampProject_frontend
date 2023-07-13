@@ -25,7 +25,6 @@ export default class UserDetail extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-
   handleSubmit(event) {
     const access_token = getToken("access-token");
     axios({
@@ -37,18 +36,18 @@ export default class UserDetail extends Component {
         fileupload: this.state.fileupload,
         listoperate: this.state.listoperate,
         writenote: this.state.writenote,
-        takepicture: this.state.takepicture
+        takepicture: this.state.takepicture,
       },
       headers: {
         Authorization: "Bearer " + access_token,
-      }
+      },
     })
-    .then((response) => {
-      console.log("UserDetail -> handleSubmit(): ", response);
-    })
-    .catch((error) => {
-      console.log("UserDetail -> handleSubmit() error: ", error);
-    })
+      .then((response) => {
+        console.log("UserDetail -> handleSubmit(): ", response);
+      })
+      .catch((error) => {
+        console.log("UserDetail -> handleSubmit() error: ", error);
+      });
     event.preventDefault();
   }
 

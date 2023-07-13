@@ -66,7 +66,7 @@ export default class NewUser extends Component {
       axios({
         method: "POST",
         url: "http://127.0.0.1:5000/api/user/v1.0/user", 
-        data  : {
+        data: {
           id: this.state.id,
           username: this.state.username,
           surnames: this.state.surnames,

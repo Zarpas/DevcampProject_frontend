@@ -64,7 +64,7 @@ const NavigationContainer = (props) => {
     <div className="nav-wrapper">
       <div className="left-side">My Logo</div>
       <div className="right-side">
-        <div className="left-side">
+        <div className="menu-side">
           {props.adminStatus === true ? (
             <DropdownMenu trigger="User Administration">
               <DropdownItemGroup>
@@ -85,6 +85,24 @@ const NavigationContainer = (props) => {
                 </DropdownItem>
                 <DropdownItem>
                   {dynamicLink("/file-new", "New File")}
+                </DropdownItem>
+              </DropdownItemGroup>
+            </DropdownMenu>
+          ) : null}
+          {props.listStatus === true ? (
+            <DropdownMenu trigger="List Administration">
+              <DropdownItemGroup>
+                <DropdownItem>
+                  {dynamicLink("/code-admin", "List Code Administration")}
+                </DropdownItem>
+                <DropdownItem>
+                  {dynamicLink("/code-new", "New Code")}
+                </DropdownItem>
+                <DropdownItem>
+                  {dynamicLink("/wire-admin", "Wire List Administration")}
+                </DropdownItem>
+                <DropdownItem>
+                  {dynamicLink("/wire-new", "New Wire")}
                 </DropdownItem>
               </DropdownItemGroup>
             </DropdownMenu>

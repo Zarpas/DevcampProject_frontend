@@ -19,7 +19,7 @@ export default class NewFile extends Component {
 
   componentConfig() {
     return {
-      iconFileTypes: [".xls", ".xlsx", ".csv", ".txt"],
+      iconFileTypes: [".xls", ".xlsx", ".csv", ".txt", ".ods"],
       showFiletypeIcon: true,
       postUrl: "no-url",
     };

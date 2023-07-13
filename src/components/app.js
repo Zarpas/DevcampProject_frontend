@@ -15,6 +15,12 @@ import NewUser from "./user-admin/new-user";
 import FileAdmin from "./file-admin/file-admin";
 import FileDetail from "./file-admin/file-detail";
 import NewFile from "./file-admin/new-file";
+import CodeDetail from "./code-admin/codelist-detail";
+import CodelistAdmin from "./code-admin/codelist-admin";
+import NewCode from "./code-admin/new-code";
+import WireAdmin from "./wire-admin/wire-admin";
+import WireDetail from "./wire-admin/wire-detail";
+import NewWire from "./wire-admin/new-wire";
 
 export default class App extends Component {
   constructor(props) {
@@ -158,7 +164,14 @@ export default class App extends Component {
   }
 
   listAuthorizedPages() {
-    return [];
+    return [
+      <Route key="1" path="/code-admin" component={CodelistAdmin} />,
+      <Route key="2" path="/code/:slug" component={CodeDetail} />,
+      <Route key="3" path="/code-new" component={NewCode} />,
+      <Route key="4" path="/wire-admin" component={WireAdmin} />,
+      <Route key="5" path="/wire/:slug" component={WireDetail} />,
+      <Route key="6" path="/wire-new" component={NewWire} />,
+    ];
   }
 
   noteAuthorizedPages() {
